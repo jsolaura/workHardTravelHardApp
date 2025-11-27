@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 30,
     fontSize: 18,
-    // fontFamily: "Rubik-Regular",
   },
 });
 

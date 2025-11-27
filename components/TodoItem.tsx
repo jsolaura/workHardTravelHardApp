@@ -2,7 +2,7 @@ import theme from '@/constants/colors';
 import { ToDo } from '@/types';
 import { AntDesign, Fontisto, Octicons } from '@expo/vector-icons';
 import { Checkbox } from 'expo-checkbox';
-import { Pressable, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface TodoItemProps {
   id: string;
@@ -42,6 +42,7 @@ const TodoItem = ({
         style={{
           ...styles.toDo,
           backgroundColor: isCompleted ? theme.colors.lightGray : theme.colors.brown,
+          paddingVertical: Platform.OS === 'android' ? 10 : 16,
         }}
       >
         <TextInput 
@@ -49,6 +50,7 @@ const TodoItem = ({
             ...styles.toDoText,
             textDecorationLine: isCompleted ? "line-through" : "none",
             color: isCompleted ? theme.colors.gray : theme.colors.white,
+            lineHeight: Platform.OS === 'android' ? 16 : undefined,
           }}
           value={toDo.text}
           editable={!isCompleted}
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: theme.colors.brown,
-    padding: 20,
+    paddingHorizontal: 20,
     borderRadius: 15,
   },
   toDoLeft: {
@@ -100,6 +102,7 @@ const styles = StyleSheet.create({
     color: theme.colors.white,
     fontSize: 16,
     fontWeight: "500",
+    padding: 0,
   },
   toDoActions: {
     flexDirection: "row",

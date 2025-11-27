@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   progressText: {
     color: theme.colors.white,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: "Rubik-bold",
   },
 })
 

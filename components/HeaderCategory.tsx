@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   buttonText: {
-    // fontFamily: "Rubik-Bold",
-    fontSize: 40,
+    fontFamily: "Rubik-Bold",
+    fontSize: 44,
     fontWeight: "500",
   },
 });
