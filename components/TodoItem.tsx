@@ -1,7 +1,8 @@
 import theme from '@/constants/colors';
 import { ToDo } from '@/types';
-import { AntDesign, Fontisto, Octicons } from '@expo/vector-icons';
+import { AntDesign, Fontisto, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { Checkbox } from 'expo-checkbox';
+import { useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface TodoItemProps {
@@ -12,6 +13,9 @@ interface TodoItemProps {
   deleteToDo: (id: string) => void;
   isSelected: (id: string) => boolean;
   updateToDoText: (id: string, text: string) => void;
+  onLongPress: () => void;
+  isDragging: boolean;
+  onFocusInput: () => void;
 }
 
 const TodoItem = ({ 
@@ -21,11 +25,37 @@ const TodoItem = ({
   toggleCompletedToDo, 
   deleteToDo, 
   isSelected,
-  updateToDoText
+  updateToDoText,
+  onLongPress,
+  isDragging,
+  onFocusInput
 }: TodoItemProps) => {
+
   const isCompleted = toDo.completed;
+  const [isFocused, setIsFocused] = useState(false);
+  const [selection, setSelection] = useState<{ start: number; end: number } | undefined>(undefined);
+  
+  const textInputRef = useRef<TextInput>(null);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFocusInput();
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    setSelection(undefined);
+  };
+
   return (
-    <View key={id} style={styles.toDoItemContainer}>
+    <Pressable 
+      key={id} 
+      style={[
+        styles.toDoItemContainer,
+        isDragging && { opacity: 0.5 }
+      ]}
+      onLongPress={onLongPress}
+    >
       <Pressable 
         onPress={() => !isCompleted && toggleSelect(id)}
         style={styles.toDoLeft}
@@ -41,38 +71,62 @@ const TodoItem = ({
       <View 
         style={{
           ...styles.toDo,
-          backgroundColor: isCompleted ? theme.colors.lightGray : theme.colors.brown,
+          backgroundColor: isCompleted 
+            ? theme.colors.lightGray 
+            : isFocused 
+              ? theme.colors.white 
+              : theme.colors.brown,
           paddingVertical: Platform.OS === 'android' ? 10 : 16,
+          elevation: isFocused ? 5 : 0,
         }}
       >
-        <TextInput 
+        {!isFocused && 
+        <Pressable onLongPress={onLongPress}>
+          <MaterialCommunityIcons 
+            name="drag"
+            size={24}
+            color={theme.colors.gray}
+          />
+        </Pressable>
+        }
+        <TextInput
+          ref={textInputRef}
           style={{
             ...styles.toDoText,
-            textDecorationLine: isCompleted ? "line-through" : "none",
-            color: isCompleted ? theme.colors.gray : theme.colors.white,
+            textDecorationLine: isCompleted ? "line-through" :  "none",
+            color: isCompleted 
+              ? theme.colors.gray 
+              : isFocused
+                ? theme.colors.black 
+                : theme.colors.white,
             lineHeight: Platform.OS === 'android' ? 16 : undefined,
           }}
           value={toDo.text}
           editable={!isCompleted}
-          onChangeText={(text) => !isCompleted && updateToDoText(id, text)}
+          onChangeText={(text) => !isCompleted && !isDragging && updateToDoText(id, text)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          selection={selection}
         />
-        <View style={styles.toDoActions}>
-          <TouchableOpacity onPress={() => toggleCompletedToDo(id)}>
-            {isCompleted ? (
-              <AntDesign name="rollback" size={20} color={theme.colors.gray} /> 
-              ) : (
-                <Octicons name="tracked-by-closed-completed" size={20} color={theme.colors.gray} />
-              )
-            }
-          </TouchableOpacity>
-          {!isCompleted && 
-            <TouchableOpacity onPress={() => deleteToDo(id)}>
-              <Fontisto name="trash" size={18} color={theme.colors.gray} />
+        {!isFocused && 
+          <View style={styles.toDoActions}>
+            <TouchableOpacity onPress={() => toggleCompletedToDo(id)}>
+              {isCompleted ? (
+                <AntDesign name="rollback" size={24} color={theme.colors.gray} /> 
+                ) : (
+                  <Octicons name="tracked-by-closed-completed" size={24} color={theme.colors.gray} />
+                )
+              }
             </TouchableOpacity>
-          }
-        </View>
+            {!isCompleted && 
+              <TouchableOpacity onPress={() => deleteToDo(id)}>
+                <Fontisto name="trash" size={18} color={theme.colors.gray} />
+              </TouchableOpacity>
+            }
+          </View>
+        }
       </View>
-    </View>
+    </Pressable>
   )
 }
 
@@ -83,6 +137,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 20,
+    marginBottom: 12,
   },
   toDo: {
     flex: 1,
@@ -90,8 +145,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: theme.colors.brown,
-    paddingHorizontal: 20,
+    paddingLeft: 10,
+    paddingRight: 20,
     borderRadius: 15,
+    gap: 10,
+    height: 56,
   },
   toDoLeft: {
     flexDirection: "row",
@@ -99,15 +157,15 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   toDoText: {
-    color: theme.colors.white,
-    fontSize: 16,
+    flex: 1,
+    fontSize: 18,
     fontWeight: "500",
     padding: 0,
   },
   toDoActions: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 20,
   },
   checkbox: {
     width: 18,

@@ -11,4 +11,7 @@ const CATEGORIES = {
   }
 };
 
-export default CATEGORIES;
+const STORAGE_KEY = "@toDos";
+const CATEGORY_STORAGE_KEY = "@category";
+
+export { CATEGORIES, CATEGORY_STORAGE_KEY, STORAGE_KEY };

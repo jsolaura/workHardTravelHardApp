@@ -26,8 +26,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    borderWidth: 1,
-  },
+  }, 
   progressContainer: {
     flex: 1,
     backgroundColor: theme.colors.white,

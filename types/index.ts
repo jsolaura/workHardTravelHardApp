@@ -1,4 +1,4 @@
-import CATEGORIES from "@/constants/Index";
+import { CATEGORIES } from "@/constants/Index";
 
 type Category = keyof typeof CATEGORIES;
 

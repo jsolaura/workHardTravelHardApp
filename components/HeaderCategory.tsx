@@ -1,5 +1,5 @@
 import theme from '@/constants/colors';
-import CATEGORIES from '@/constants/Index';
+import { CATEGORIES } from '@/constants/Index';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface HeaderCategoryProps {
@@ -40,10 +40,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 40,
   },
   buttonText: {
     fontFamily: "Rubik-Bold",
-    fontSize: 44,
+    fontSize: 48,
     fontWeight: "500",
   },
 });

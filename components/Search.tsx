@@ -1,4 +1,4 @@
-import CATEGORIES from '@/constants/Index';
+import { CATEGORIES } from '@/constants/Index';
 import theme from '@/constants/colors';
 import { StyleSheet, TextInput } from 'react-native';
 
